@@ -16,7 +16,7 @@ type Customer struct {
 
 func main() {
 	// Initialize database connection
-	db, err := sql.Open("mysql", "kkavenger:mishra@tcp(localhost:3306)/test_db")
+	db, err := sql.Open("mysql", "user:mishra@tcp(localhost:3306)/test_db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,6 +72,18 @@ func main() {
 		}
 
 		return string(jsonData), nil
+	})
+	app.PUT("/customer/{id}/{name}", func(ctx *gofr.Context) (interface{}, error) {
+		id := ctx.PathParam("id")
+		name := ctx.PathParam("name")
+
+		// Updating the customer's name in the database using SQL
+		_, err := db.ExecContext(ctx, "UPDATE customers SET name = ? WHERE id = ?", name, id)
+		if err != nil {
+			return nil, err
+		}
+
+		return "Customer updated successfully", nil
 	})
 
 	// Starts the server, it will listen on the default port 8000.
