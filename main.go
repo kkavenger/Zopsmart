@@ -85,6 +85,17 @@ func main() {
 
 		return "Customer updated successfully", nil
 	})
+	app.DELETE("/customer/{id}", func(ctx *gofr.Context) (interface{}, error) {
+		id := ctx.PathParam("id")
+
+		// Deleting the customer from the database using SQL
+		_, err := db.ExecContext(ctx, "DELETE FROM customers WHERE id = ?", id)
+		if err != nil {
+			return nil, err
+		}
+
+		return "Customer deleted successfully", nil
+	})
 
 	// Starts the server, it will listen on the default port 8000.
 	// It can be overridden through the configs
